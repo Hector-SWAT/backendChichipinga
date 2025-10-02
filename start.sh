@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 # Script de arranque para Render
-# Render asigna el puerto en la variable $PORT
 
+PORT=${PORT:-8080}
 echo "Starting PHP server on port $PORT..."
 php -S 0.0.0.0:$PORT -t .

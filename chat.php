@@ -1,6 +1,13 @@
 <?php
 header("Access-Control-Allow-Origin: *"); 
 header("Content-Type: application/json");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+
+// Manejar preflight requests
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit(0);
+}
 
 // Leer API Key desde variable de entorno
 $apiKey = getenv('OPENAI_API_KEY');
@@ -10,10 +17,16 @@ if (!$apiKey) {
     exit;
 }
 
-$userMessage = $_POST["message"] ?? "Hola";
+// Leer el mensaje del usuario
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    $userMessage = $input['message'] ?? "Hola";
+} else {
+    $userMessage = $_GET['message'] ?? "Hola";
+}
 
 // Contenido fijo del menú
-$menu = "
+$systemPrompt = "
 Eres el asistente oficial del restaurante La Chichipinga, un restaurante tradicional mexicano.
 Siempre responde en español, de forma breve, amable y clara.
 Reglas obligatorias:
@@ -48,40 +61,56 @@ Horarios:
 ";
 
 // Inicializar cURL
-$ch = curl_init("https://api.openai.com/v1/responses");
+$ch = curl_init("https://api.openai.com/v1/chat/completions");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     "Content-Type: application/json",
     "Authorization: Bearer $apiKey"
 ]);
 
-// Formato correcto para gpt-5-nano
+// Formato correcto para la API de OpenAI
 $data = [
-    "model" => "gpt-5-nano",
+    "model" => "gpt-3.5-turbo", // o "gpt-4" si tienes acceso
     "messages" => [
         [
+            "role" => "system",
+            "content" => $systemPrompt
+        ],
+        [
             "role" => "user",
-            "content" => $menu . "\n\nEl cliente dijo: " . $userMessage
+            "content" => $userMessage
         ]
-    ]
+    ],
+    "temperature" => 0.7,
+    "max_tokens" => 500
 ];
 
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
 $response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$curlError = curl_error($ch);
 curl_close($ch);
 
 // Procesar respuesta
-$result = json_decode($response, true);
-
 $reply = "El restaurante La Chichipinga te responde: Lo siento, no entendí tu pedido.";
 
-if (isset($result["output"][0]["content"][0]["text"])) {
-    $reply = $result["output"][0]["content"][0]["text"];
-} elseif (isset($result["output"][0]["content"][0]["content"][0]["text"])) {
-    $reply = $result["output"][0]["content"][0]["content"][0]["text"];
+if ($response === false) {
+    $reply = "El restaurante La Chichipinga te responde: Error de conexión. " . $curlError;
+} else {
+    $result = json_decode($response, true);
+    
+    // Debug: para ver la respuesta completa de la API
+    // file_put_contents('debug.log', print_r($result, true));
+    
+    if (isset($result['choices'][0]['message']['content'])) {
+        $reply = $result['choices'][0]['message']['content'];
+    } elseif (isset($result['error']['message'])) {
+        $reply = "El restaurante La Chichipinga te responde: Error - " . $result['error']['message'];
+    }
 }
 
 // Devolver JSON
 echo json_encode(["reply" => $reply]);
+?>
