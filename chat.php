@@ -1,15 +1,18 @@
 <?php
-header("Access-Control-Allow-Origin: *"); // 🔥 permite que InfinityFree lo consuma
+header("Access-Control-Allow-Origin: *"); 
 header("Content-Type: application/json");
 
-// API Key (no la pongas en el frontend)
-$apiKey = getenv('OPENAI_API_KEY'); // Se leerá desde la variable de entorno
+// Leer API Key desde variable de entorno
+$apiKey = getenv('OPENAI_API_KEY');
+
+if (!$apiKey) {
+    echo json_encode(["reply" => "API Key no configurada en el entorno."]);
+    exit;
+}
 
 $userMessage = $_POST["message"] ?? "Hola";
 
-// ==========================
-// CONTENIDO FIJO (MENÚ + INSTRUCCIONES)
-// ==========================
+// Contenido fijo del menú
 $menu = "
 Eres el asistente oficial del restaurante La Chichipinga, un restaurante tradicional mexicano.
 Siempre responde en español, de forma breve, amable y clara.
@@ -44,16 +47,23 @@ Horarios:
 - Sábados y Domingos: 9:00 am – 8:00 pm
 ";
 
+// Inicializar cURL
 $ch = curl_init("https://api.openai.com/v1/responses");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
-  "Content-Type: application/json",
-  "Authorization: Bearer $apiKey"
+    "Content-Type: application/json",
+    "Authorization: Bearer $apiKey"
 ]);
 
+// Formato correcto para gpt-5-nano
 $data = [
-  "model" => "gpt-5-nano",
-  "input" => $menu . "\n\nEl cliente dijo: " . $userMessage
+    "model" => "gpt-5-nano",
+    "messages" => [
+        [
+            "role" => "user",
+            "content" => $menu . "\n\nEl cliente dijo: " . $userMessage
+        ]
+    ]
 ];
 
 curl_setopt($ch, CURLOPT_POST, true);
@@ -62,8 +72,16 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 $response = curl_exec($ch);
 curl_close($ch);
 
+// Procesar respuesta
 $result = json_decode($response, true);
-$reply = $result["output"][0]["content"][0]["text"] 
-  ?? "El restaurante La Chichipinga te responde: Lo siento, no entendí tu pedido.";
 
+$reply = "El restaurante La Chichipinga te responde: Lo siento, no entendí tu pedido.";
+
+if (isset($result["output"][0]["content"][0]["text"])) {
+    $reply = $result["output"][0]["content"][0]["text"];
+} elseif (isset($result["output"][0]["content"][0]["content"][0]["text"])) {
+    $reply = $result["output"][0]["content"][0]["content"][0]["text"];
+}
+
+// Devolver JSON
 echo json_encode(["reply" => $reply]);

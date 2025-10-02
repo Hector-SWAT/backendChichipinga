@@ -1,2 +1,2 @@
 # backendChichipinga
-codigo para bot de la web chichipinga
+codigo para bot con OpenAI 5 chatGPT de la web chichipinga
