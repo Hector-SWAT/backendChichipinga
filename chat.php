@@ -32,31 +32,80 @@ function getPredefinedResponse($userMessage) {
     // Respuestas predefinidas
     $responses = [
         'hola' => 'El restaurante La Chichipinga te responde: ¡Hola! Bienvenido a nuestro restaurante mexicano. ¿En qué puedo ayudarte hoy?',
+        
         'menu' => 'El restaurante La Chichipinga te ofrece: 
-🍲 Especialidades: 
+🍲 ESPECIALIDADES: 
 - Tacos al Pastor ($50)
 - Enchiladas Verdes ($90) 
 - Mole Poblano ($120)
 - Pasta Especial ($110)
 - Pizza Especial ($150)
 
-🥗 Menú Ejecutivo también disponible
-☕ Café y Postres
-👨‍👩‍👧 Promociones Familiares',
+🥗 MENÚ EJECUTIVO:
+- Menú del Día ($80)
+- Ejecutivo Ligero ($70)
+
+👨‍👩‍👧 PROMOCIONES:
+- Promo Familiar ($300)
+- Combo Pareja ($120)
+
+☕ CAFÉ Y POSTRE:
+- Tiramisú ($80)
+- Café Premium ($50)
+- Flan Napolitano ($60)
+- Pan de Elote ($70)',
         
-        'tacos' => 'El restaurante La Chichipinga te ofrece: Tacos al Pastor con piña, salsa picante y carne de cerdo por $50',
+        'tacos' => 'El restaurante La Chichipinga te ofrece: Tacos al Pastor con piña, salsa picante y carne de cerdo por $50. ¡Nuestra especialidad de la casa!',
         
         'horario' => 'El restaurante La Chichipinga te responde: 
-Lunes a Viernes: 9:00 am – 6:00 pm
-Sábados y Domingos: 9:00 am – 8:00 pm',
+📅 Lunes a Viernes: 9:00 am – 6:00 pm
+📅 Sábados y Domingos: 9:00 am – 8:00 pm',
         
-        'ubicacion' => 'El restaurante La Chichipinga te responde: Estamos ubicados en Av. Principal 123, Ciudad México. ¡Te esperamos!',
+        'ubicacion' => 'El restaurante La Chichipinga te responde: Estamos ubicados en José Dolores Pérez #3, andador de los Jilgueros, Zacatlán, Puebla. ¡Te esperamos! 🗺️',
         
-        'precio' => 'El restaurante La Chichipinga te ofrece: Nuestros precios van desde $50 por los Tacos al Pastor hasta $150 por la Pizza Especial.',
+        'precio' => 'El restaurante La Chichipinga te ofrece: Nuestros precios van desde $50 por los Tacos al Pastor hasta $150 por la Pizza Especial. Tenemos opciones para todos los presupuestos.',
         
         'promociones' => 'El restaurante La Chichipinga te ofrece: 
-👨‍👩‍👧 Promo Familiar ($300) - 2 platos principales + 2 entradas + postre grande
-💑 Combo Pareja ($120) - 2 tacos + 2 bebidas + 1 postre pequeño'
+👨‍👩‍👧 PROMO FAMILIAR ($300) - 2 platos principales + 2 entradas + postre grande
+💑 COMBO PAREJA ($120) - 2 tacos + 2 bebidas + 1 postre pequeño
+🎉 MENÚ EJECUTIVO ($80) - Plato principal + entrada + postre + bebida',
+        
+        'recomendacion' => 'El restaurante La Chichipinga te ofrece: Te recomendamos nuestros famosos Tacos al Pastor si buscas algo tradicional, o el Mole Poblano si quieres probar un platillo emblemático de Puebla. ¡Ambos son excelentes!',
+        
+        'vegetariano' => 'El restaurante La Chichipinga te ofrece: Tenemos opciones vegetarianas como las Enchiladas Verdes (sin pollo), Pasta Especial y Pizza Especial. También ofrecemos el Menú Ejecutivo Ligero con opciones saludables.',
+        
+        'postres' => 'El restaurante La Chichipinga te ofrece: 
+🍰 Tiramisú Clásico - $80
+☕ Café Premium - $50
+🍮 Flan Napolitano - $60
+🌽 Pan de Elote - $70',
+        
+        'bebidas' => 'El restaurante La Chichipinga te ofrece: 
+🥤 Refrescos ($25)
+💧 Aguas frescas ($30)
+☕ Café Premium ($50)
+🍺 Cervezas ($40)
+🍷 Vino de la casa ($60)',
+        
+        'reservacion' => 'El restaurante La Chichipinga te responde: Para reservaciones puedes llamarnos al 123-456-7890. Recomendamos reservar con anticipación los fines de semana.',
+        
+        'delivery' => 'El restaurante La Chichipinga te responde: Sí, hacemos delivery en Zacatlán y áreas cercanas. Llámanos al 123-456-7890 para realizar tu pedido.',
+        
+        'estacionamiento' => 'El restaurante La Chichipinga te responde: Contamos con estacionamiento gratuito para nuestros clientes.',
+        
+        'especial' => 'El restaurante La Chichipinga te ofrece: Nuestro platillo más especial es el Mole Poblano, una receta tradicional de Puebla con más de 20 ingredientes. ¡Una verdadera experiencia culinaria!',
+        
+        'popular' => 'El restaurante La Chichipinga te ofrece: Nuestros Tacos al Pastor son los más populares, seguidos del Mole Poblano y la Pizza Especial. ¡Todos son deliciosos!',
+        
+        'picante' => 'El restaurante La Chichipinga te ofrece: Si te gusta lo picante, te recomendamos los Tacos al Pastor con nuestra salsa picante especial o las Enchiladas Verdes. ¡Tenemos diferentes niveles de picor!',
+        
+        'familiar' => 'El restaurante La Chichipinga te responde: Somos un restaurante familiar con ambiente acogedor. Tenemos área para niños y la Promo Familiar perfecta para compartir.',
+        
+        'eventos' => 'El restaurante La Chichipinga te responde: Sí, organizamos eventos especiales. Contamos con espacio para celebraciones. Contáctanos para más información.',
+        
+        'pago' => 'El restaurante La Chichipinga te responde: Aceptamos efectivo, tarjetas de crédito/débito y transferencias bancarias.',
+        
+        'wifi' => 'El restaurante La Chichipinga te responde: Sí, ofrecemos WiFi gratuito a nuestros clientes.'
     ];
     
     // Buscar coincidencias en el mensaje
@@ -66,25 +115,81 @@ Sábados y Domingos: 9:00 am – 8:00 pm',
         }
     }
     
-    // Búsqueda por patrones
-    if (strpos($message, 'menu') !== false || strpos($message, 'plato') !== false || strpos($message, 'comida') !== false || strpos($message, 'qué tienen') !== false) {
+    // Búsqueda por patrones mejorada
+    if (strpos($message, 'menu') !== false || strpos($message, 'plato') !== false || strpos($message, 'comida') !== false || strpos($message, 'qué tienen') !== false || strpos($message, 'carta') !== false) {
         return $responses['menu'];
     }
     
-    if (strpos($message, 'hora') !== false || strpos($message, 'cuándo') !== false || strpos($message, 'abren') !== false) {
+    if (strpos($message, 'hora') !== false || strpos($message, 'cuándo') !== false || strpos($message, 'abren') !== false || strpos($message, 'cierran') !== false) {
         return $responses['horario'];
     }
     
-    if (strpos($message, 'dónde') !== false || strpos($message, 'ubicacion') !== false || strpos($message, 'direccion') !== false) {
+    if (strpos($message, 'dónde') !== false || strpos($message, 'ubicacion') !== false || strpos($message, 'direccion') !== false || strpos($message, 'local') !== false) {
         return $responses['ubicacion'];
     }
     
-    if (strpos($message, 'promo') !== false || strpos($message, 'ofert') !== false || strpos($message, 'combo') !== false) {
+    if (strpos($message, 'promo') !== false || strpos($message, 'ofert') !== false || strpos($message, 'combo') !== false || strpos($message, 'descuento') !== false) {
         return $responses['promociones'];
     }
     
-    // Respuesta por defecto
-    return 'El restaurante La Chichipinga te responde: ¡Hola! Somos un restaurante mexicano tradicional. ¿Te interesa conocer nuestro menú, horarios o promociones?';
+    if (strpos($message, 'recomienda') !== false || strpos($message, 'recomendación') !== false || strpos($message, 'sugerencia') !== false) {
+        return $responses['recomendacion'];
+    }
+    
+    if (strpos($message, 'vegetariano') !== false || strpos($message, 'vegano') !== false || strpos($message, 'sin carne') !== false) {
+        return $responses['vegetariano'];
+    }
+    
+    if (strpos($message, 'postre') !== false || strpos($message, 'dulce') !== false || strpos($message, 'postres') !== false) {
+        return $responses['postres'];
+    }
+    
+    if (strpos($message, 'bebida') !== false || strpos($message, 'refresco') !== false || strpos($message, 'cerveza') !== false || strpos($message, 'vino') !== false) {
+        return $responses['bebidas'];
+    }
+    
+    if (strpos($message, 'reserva') !== false || strpos($message, 'reservar') !== false || strpos($message, 'mesa') !== false) {
+        return $responses['reservacion'];
+    }
+    
+    if (strpos($message, 'delivery') !== false || strpos($message, 'domicilio') !== false || strpos($message, 'a domicilio') !== false || strpos($message, 'entrega') !== false) {
+        return $responses['delivery'];
+    }
+    
+    if (strpos($message, 'estacionamiento') !== false || strpos($message, 'parqueo') !== false || strpos($message, 'aparcar') !== false) {
+        return $responses['estacionamiento'];
+    }
+    
+    if (strpos($message, 'especial') !== false || strpos($message, 'especialidad') !== false || strpos($message, 'famoso') !== false) {
+        return $responses['especial'];
+    }
+    
+    if (strpos($message, 'popular') !== false || strpos($message, 'más pedido') !== false || strpos($message, 'favorito') !== false) {
+        return $responses['popular'];
+    }
+    
+    if (strpos($message, 'picante') !== false || strpos($message, 'picoso') !== false) {
+        return $responses['picante'];
+    }
+    
+    if (strpos($message, 'familiar') !== false || strpos($message, 'niños') !== false || strpos($message, 'infantil') !== false) {
+        return $responses['familiar'];
+    }
+    
+    if (strpos($message, 'evento') !== false || strpos($message, 'fiesta') !== false || strpos($message, 'celebración') !== false) {
+        return $responses['eventos'];
+    }
+    
+    if (strpos($message, 'pago') !== false || strpos($message, 'tarjeta') !== false || strpos($message, 'efectivo') !== false || strpos($message, 'pagar') !== false) {
+        return $responses['pago'];
+    }
+    
+    if (strpos($message, 'wifi') !== false || strpos($message, 'internet') !== false) {
+        return $responses['wifi'];
+    }
+    
+    // Respuesta por defecto mejorada
+    return 'El restaurante La Chichipinga te responde: ¡Hola! Somos un restaurante mexicano tradicional en Zacatlán, Puebla. ¿Te interesa conocer nuestro menú, horarios, promociones, hacer una reservación o tienes alguna pregunta específica?';
 }
 
 // Usar Google Gemini API
@@ -94,28 +199,31 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
     "Content-Type: application/json"
 ]);
 
-// Prompt para Gemini
-$systemPrompt = "Eres el asistente oficial del restaurante La Chichipinga, un restaurante tradicional mexicano. Siempre responde en español, de forma breve, amable y clara.
+// Prompt mejorado para Gemini
+$systemPrompt = "Eres el asistente oficial del restaurante La Chichipinga, un restaurante tradicional mexicano ubicado en Zacatlán, Puebla. Siempre responde en español, de forma breve, amable y clara.
 
 Reglas obligatorias:
-- Si la pregunta es sobre platillos o menú → comienza con: 'El restaurante La Chichipinga te ofrece...'
-- Si la pregunta es sobre horarios, ubicación u otra información → comienza con: 'El restaurante La Chichipinga te responde...'
+- Si la pregunta es sobre platillos, menú, recomendaciones o comida → comienza con: 'El restaurante La Chichipinga te ofrece...'
+- Si la pregunta es sobre horarios, ubicación, reservaciones, delivery u otra información del restaurante → comienza con: 'El restaurante La Chichipinga te responde...'
 
-Información del restaurante:
+INFORMACIÓN DEL RESTAURANTE:
+📍 UBICACIÓN: José Dolores Pérez #3, andador de los Jilgueros, Zacatlán, Puebla
+📞 TELÉFONO: 123-456-7890
+
 🍲 ESPECIALIDADES:
-- Tacos al Pastor — $50
+- Tacos al Pastor — $50 (nuestra especialidad)
 - Enchiladas Verdes — $90  
-- Mole Poblano — $120
+- Mole Poblano — $120 (platillo emblemático)
 - Pasta Especial — $110
 - Pizza Especial — $150
 
 🥗 MENÚ EJECUTIVO:
-- Menú del Día: plato principal + entrada + postre + bebida
-- Ejecutivo Ligero: opción saludable
+- Menú del Día: $80 (plato principal + entrada + postre + bebida)
+- Ejecutivo Ligero: $70 (opción saludable)
 
 👨‍👩‍👧 PROMOCIONES:
-- Promo Familiar — $300
-- Combo Pareja — $120
+- Promo Familiar — $300 (2 platos principales + 2 entradas + postre grande)
+- Combo Pareja — $120 (2 tacos + 2 bebidas + 1 postre pequeño)
 
 ☕ CAFÉ Y POSTRE:
 - Tiramisú Clásico — $80
@@ -123,11 +231,25 @@ Información del restaurante:
 - Flan Napolitano — $60
 - Pan de Elote — $70
 
-HORARIOS:
+🥤 BEBIDAS:
+- Refrescos — $25
+- Aguas frescas — $30
+- Cervezas — $40
+- Vino de la casa — $60
+
+📅 HORARIOS:
 - Lunes a Viernes: 9:00 am – 6:00 pm
 - Sábados y Domingos: 9:00 am – 8:00 pm
 
-Responde de forma muy breve y directa (máximo 2-3 líneas).";
+SERVICIOS:
+✅ Delivery en Zacatlán
+✅ Reservaciones
+✅ Estacionamiento gratuito
+✅ WiFi gratuito
+✅ Eventos y celebraciones
+✅ Opciones vegetarianas
+
+Responde de forma muy breve y directa (máximo 2-3 líneas), siendo amable y servicial.";
 
 $data = [
     "contents" => [
