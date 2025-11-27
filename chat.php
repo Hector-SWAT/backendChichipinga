@@ -87,7 +87,7 @@ function getPredefinedResponse($userMessage) {
 🍺 Cervezas ($40)
 🍷 Vino de la casa ($60)',
         
-        'reservacion' => 'El restaurante La Chichipinga te responde: Para reservaciones puedes llamarnos al 123-456-7890. Recomendamos reservar con anticipación los fines de semana.',
+        'reservacion' => 'El restaurante La Chichipinga te responde: Para reservaciones puedes llamarnos al 7971301139. Recomendamos reservar con anticipación los fines de semana.',
         
         'delivery' => 'El restaurante La Chichipinga te responde: Sí, hacemos delivery en Zacatlán y áreas cercanas. Llámanos al 123-456-7890 para realizar tu pedido.',
         
