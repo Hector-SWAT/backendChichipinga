@@ -192,6 +192,47 @@ function getPredefinedResponse($userMessage) {
     return 'El restaurante La Chichipinga te responde: ¡Hola! Somos un restaurante mexicano tradicional en Zacatlán, Puebla. ¿Te interesa conocer nuestro menú, horarios, promociones, hacer una reservación o tienes alguna pregunta específica?';
 }
 
+// Función para detectar mensajes de despedida
+function isFarewellMessage($message) {
+    $farewellKeywords = [
+        'adios', 'adiós', 'chao', 'bye', 'hasta luego', 'hasta pronto', 
+        'nos vemos', 'gracias', 'finalizar', 'terminar', 'salir',
+        'fue todo', 'eso es todo', 'nada más', 'me voy'
+    ];
+    
+    $message = strtolower(trim($message));
+    
+    foreach ($farewellKeywords as $keyword) {
+        if (strpos($message, $keyword) !== false) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+// Función para generar mensaje de despedida
+function getFarewellMessage() {
+    $farewells = [
+        "¡Ha sido un placer atenderte! 🎉 Esperamos verte pronto en La Chichipinga para que disfrutes de nuestros deliciosos platillos mexicanos. ¡Buen provecho! 🌮",
+        
+        "¡Gracias por contactarnos! 🤗 Te esperamos en José Dolores Pérez #3, Zacatlán, Puebla. ¡Ven a probar nuestros famosos Tacos al Pastor! 🌮",
+        
+        "¡Fue un gusto ayudarte! 😊 No olvides que tenemos promociones especiales todos los días. ¡Te esperamos en La Chichipinga! 🎊",
+        
+        "¡Hasta pronto! 👋 Esperamos que pronto nos visites para disfrutar de la auténtica comida mexicana en un ambiente familiar. ¡Te estamos esperando! 🏠",
+        
+        "¡Gracias por tu preferencia! ❤️ Recuerda que puedes llamarnos al 123-456-7890 para reservaciones o pedidos a domicilio. ¡Buen día! ☀️"
+    ];
+    
+    return $farewells[array_rand($farewells)];
+}
+
+// Función para generar mensaje de valoración
+function getRatingMessage() {
+    return "🌟 **Valoración de la conversación**\n\n¿Cómo calificarías tu experiencia con nuestro asistente virtual?\n\n⭐ ⭐ ⭐ ⭐ ⭐\n\n*Tu feedback nos ayuda a mejorar nuestro servicio. ¡Gracias!*";
+}
+
 // Usar Google Gemini API
 $ch = curl_init("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" . $apiKey);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -297,6 +338,22 @@ if (empty($reply)) {
     $reply = getPredefinedResponse($userMessage);
 }
 
+// Verificar si es un mensaje de despedida
+$isFarewell = isFarewellMessage($userMessage);
+$ratingMessage = "";
+
+if ($isFarewell) {
+    $farewellMessage = getFarewellMessage();
+    $ratingMessage = getRatingMessage();
+    
+    // Combinar el reply normal con el mensaje de despedida y valoración
+    $reply = $reply . "\n\n" . $farewellMessage . "\n\n" . $ratingMessage;
+}
+
 // Devolver JSON
-echo json_encode(["reply" => $reply]);
+echo json_encode([
+    "reply" => $reply,
+    "isFarewell" => $isFarewell,
+    "ratingMessage" => $isFarewell ? $ratingMessage : ""
+]);
 ?>
