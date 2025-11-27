@@ -89,7 +89,7 @@ function getPredefinedResponse($userMessage) {
         
         'reservacion' => 'El restaurante La Chichipinga te responde: Para reservaciones puedes llamarnos al 7971301139. Recomendamos reservar con anticipación los fines de semana.',
         
-        'delivery' => 'El restaurante La Chichipinga te responde: Sí, hacemos delivery en Zacatlán y áreas cercanas. Llámanos al 123-456-7890 para realizar tu pedido.',
+        'delivery' => 'El restaurante La Chichipinga te responde: Sí, hacemos delivery en Zacatlán y áreas cercanas. Llámanos al 7971301139 para realizar tu pedido.',
         
         'estacionamiento' => 'El restaurante La Chichipinga te responde: Contamos con estacionamiento gratuito para nuestros clientes.',
         
@@ -222,7 +222,7 @@ function getFarewellMessage() {
         
         "¡Hasta pronto! 👋 Esperamos que pronto nos visites para disfrutar de la auténtica comida mexicana en un ambiente familiar. ¡Te estamos esperando! 🏠",
         
-        "¡Gracias por tu preferencia! ❤️ Recuerda que puedes llamarnos al 123-456-7890 para reservaciones o pedidos a domicilio. ¡Buen día! ☀️"
+        "¡Gracias por tu preferencia! ❤️ Recuerda que puedes llamarnos al 7971301139 para reservaciones o pedidos a domicilio. ¡Buen día! ☀️"
     ];
     
     return $farewells[array_rand($farewells)];
@@ -249,7 +249,7 @@ Reglas obligatorias:
 
 INFORMACIÓN DEL RESTAURANTE:
 📍 UBICACIÓN: José Dolores Pérez #3, andador de los Jilgueros, Zacatlán, Puebla
-📞 TELÉFONO: 123-456-7890
+📞 TELÉFONO: 7971301139
 
 🍲 ESPECIALIDADES:
 - Tacos al Pastor — $50 (nuestra especialidad)
