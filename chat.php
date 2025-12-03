@@ -13,16 +13,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 $apiKey = getenv('GEMINI_API_KEY');
 
 if (!$apiKey) {
-    echo json_encode(["reply" => "El restaurante La Chichipinga te responde: Error de configuración del servicio."]);
+    echo json_encode([
+        "reply" => "El restaurante La Chichipinga te responde: Error de configuración del servicio.",
+        "triggerRating" => false
+    ]);
     exit;
 }
 
 // Leer el mensaje del usuario
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $input = json_decode(file_get_contents('php://input'), true);
-    $userMessage = $input['message'] ?? "Hola";
+    $input = file_get_contents('php://input');
+    
+    // Manejar diferentes formatos de entrada
+    if (strpos($input, 'message=') !== false) {
+        // Formato application/x-www-form-urlencoded
+        parse_str($input, $postData);
+        $userMessage = $postData['message'] ?? "Hola";
+        $sessionId = $postData['session_id'] ?? null;
+    } else {
+        // Formato JSON
+        $jsonData = json_decode($input, true);
+        $userMessage = $jsonData['message'] ?? "Hola";
+        $sessionId = $jsonData['session_id'] ?? null;
+    }
 } else {
+    // Método GET
     $userMessage = $_GET['message'] ?? "Hola";
+    $sessionId = $_GET['session_id'] ?? null;
 }
 
 // Sistema de respuestas predefinidas como fallback
@@ -192,18 +209,44 @@ function getPredefinedResponse($userMessage) {
     return 'El restaurante La Chichipinga te responde: ¡Hola! Somos un restaurante mexicano tradicional en Zacatlán, Puebla. ¿Te interesa conocer nuestro menú, horarios, promociones, hacer una reservación o tienes alguna pregunta específica?';
 }
 
-// Función para detectar mensajes de despedida
+// Función mejorada para detectar mensajes de despedida
 function isFarewellMessage($message) {
-    $farewellKeywords = [
-        'adios', 'adiós', 'chao', 'bye', 'hasta luego', 'hasta pronto', 
-        'nos vemos', 'gracias', 'finalizar', 'terminar', 'salir',
-        'fue todo', 'eso es todo', 'nada más', 'me voy'
-    ];
-    
     $message = strtolower(trim($message));
     
+    // Lista completa de palabras y frases de despedida
+    $farewellKeywords = [
+        'adios', 'adiós', 'chao', 'bye', 'goodbye', 'bye bye',
+        'hasta luego', 'hasta pronto', 'hasta la vista', 'hasta mañana',
+        'nos vemos', 'nos vemos luego', 'nos vemos pronto',
+        'gracias', 'muchas gracias', 'thank you', 'thanks',
+        'finalizar', 'terminar', 'acabar', 'concluir',
+        'salir', 'me voy', 'me retiro', 'me despido',
+        'fue todo', 'eso es todo', 'nada más', 'eso sería todo',
+        'ya está', 'listo', 'listo gracias', 'está bien',
+        'bueno ya', 'ok gracias', 'ok adios', 'vale gracias',
+        'perfecto gracias', 'excelente gracias', 'genial gracias',
+        'bien gracias', 'de acuerdo gracias'
+    ];
+    
+    // También detectar frases comunes de agradecimiento + despedida
+    $farewellPatterns = [
+        '/gracias.*(adios|adiós|chao|bye|hasta)/i',
+        '/(adios|adiós|chao|bye).*gracias/i',
+        '/^(gracias|thanks).*$/i',
+        '/^(adios|adiós|chao|bye).*$/i',
+        '/.*(me voy|me retiro|me despido).*$/i'
+    ];
+    
+    // Verificar palabras clave
     foreach ($farewellKeywords as $keyword) {
         if (strpos($message, $keyword) !== false) {
+            return true;
+        }
+    }
+    
+    // Verificar patrones regex
+    foreach ($farewellPatterns as $pattern) {
+        if (preg_match($pattern, $message)) {
             return true;
         }
     }
@@ -211,7 +254,7 @@ function isFarewellMessage($message) {
     return false;
 }
 
-// Función para generar mensaje de despedida
+// Función para generar mensaje de despedida (sin mención de valoración)
 function getFarewellMessage() {
     $farewells = [
         "¡Ha sido un placer atenderte! 🎉 Esperamos verte pronto en La Chichipinga para que disfrutes de nuestros deliciosos platillos mexicanos. ¡Buen provecho! 🌮",
@@ -228,9 +271,19 @@ function getFarewellMessage() {
     return $farewells[array_rand($farewells)];
 }
 
-// Función para generar mensaje de valoración
-function getRatingMessage() {
-    return "🌟 **Valoración de la conversación**\n\n¿Cómo calificarías tu experiencia con nuestro asistente virtual?\n\n⭐ ⭐ ⭐ ⭐ ⭐\n\n*Tu feedback nos ayuda a mejorar nuestro servicio. ¡Gracias!*";
+// Función para determinar si debe mostrar la valoración
+function shouldTriggerRating($userMessage, $sessionId = null) {
+    // Primero verificar si es mensaje de despedida
+    if (!isFarewellMessage($userMessage)) {
+        return false;
+    }
+    
+    // Aquí podrías agregar más lógica en el futuro:
+    // - Verificar si el usuario ya calificó en esta sesión
+    // - Verificar tiempo mínimo de conversación
+    // - Etc.
+    
+    return true;
 }
 
 // Usar Google Gemini API
@@ -340,20 +393,20 @@ if (empty($reply)) {
 
 // Verificar si es un mensaje de despedida
 $isFarewell = isFarewellMessage($userMessage);
-$ratingMessage = "";
+$triggerRating = shouldTriggerRating($userMessage, $sessionId ?? null);
 
 if ($isFarewell) {
     $farewellMessage = getFarewellMessage();
-    $ratingMessage = getRatingMessage();
     
-    // Combinar el reply normal con el mensaje de despedida y valoración
-    $reply = $reply . "\n\n" . $farewellMessage . "\n\n" . $ratingMessage;
+    // Combinar el reply normal con el mensaje de despedida
+    $reply = $reply . "\n\n" . $farewellMessage;
 }
 
-// Devolver JSON
+// Devolver JSON con información para el frontend
 echo json_encode([
     "reply" => $reply,
     "isFarewell" => $isFarewell,
-    "ratingMessage" => $isFarewell ? $ratingMessage : ""
+    "triggerRating" => $triggerRating,
+    "sessionId" => $sessionId ?? session_id()
 ]);
 ?>
